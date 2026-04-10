@@ -2,7 +2,7 @@
 
 ## Overview
 
-Apex enemies are rare, powerful mini-bosses that define rooms. They hunt Tier 2 Predators, never flee, and feature phase transitions triggered by HP thresholds. Each Apex has unique mechanics that force players to adapt mid-fight.
+Tier 3 enemies are rare, powerful encounters that define the rooms they occupy. They use behavior trees with phase transitions triggered by HP thresholds. Each Apex has unique mechanics that demand specific strategies.
 
 ## Shared Tier 3 Properties
 
@@ -12,156 +12,149 @@ Apex enemies are rare, powerful mini-bosses that define rooms. They hunt Tier 2 
 | Damage | 2-3 masks per hit |
 | AI type | Behavior Tree with Phase Transitions |
 | Count per room | 0-1 |
-| Spawn chance | 5% per hour of room being unvisited |
-| Max per zone instance | 3 (hard cap across all rooms) |
-| Drops | 15-25 Silk, rare materials, guaranteed ability shard |
-| Aggro range | Entire room (always aware of player presence) |
-| Leash range | Room boundaries (never leaves their room) |
-| Flee behavior | Never flees |
+| Spawn chance | 5% per hour the room is unvisited |
+| Respawn rule | Does not respawn on room re-entry. New roll on next visit cycle. |
+| Loot | Rare Silk (100%), Unique material (30%), Infection +5 per kill |
+| Ecosystem role | Apex predator. Hunts Tier 2. |
 
-## Phase Transition Template
+## Phase Transition System
 
-| Phase | HP Threshold | General Pattern |
+All Apex enemies share a two-phase transition model:
+
+| Phase | HP Threshold | Behavior Change |
 |---|---|---|
-| Phase 1 | 100% - 60% | Core attack set (2-3 attacks). Teaches patterns. |
-| Phase 2 | 60% - 25% | New attacks added. One core attack enhanced. Arena effect. |
-| Phase 3 | 25% - 0% | All attacks faster. Unique desperation mechanic. |
+| Phase 1 | 100% - 50% | Standard attack patterns. Learning phase for player. |
+| Phase 2 | 50% - 0% | Enhanced attacks. New abilities unlocked. Aggression increases. |
 
-Transitions: 1.5s invulnerability during phase change. Visual roar/transformation animation. Shockwave pushes players back 5 units.
+Transition animation: 2s invulnerability + visual transformation + AoE shockwave (1 mask, 5-unit radius).
 
 ## Apex Types
 
-### Hive Matriarch
+### 1. Hive Matriarch
 
 | Property | Value |
 |---|---|
 | HP | 40 masks |
-| Speed | 2 u/s (slow, massive) |
-| Spawn zones | Zones 2-4 |
-| Arena | Requires 15x15 unit minimum room |
+| Speed | Walk: 1.5 u/s (slow, lumbering) |
+| Detection range | 15 units |
+| Spawn zones | 1, 4 |
 
-**Phase 1 (100%-60%)**
+**Phase 1 Attacks:**
 
-| Attack | Damage | Speed | Description |
+| Attack | Damage | Telegraph | Cooldown |
 |---|---|---|---|
-| Swarm Spawn | 0 | Every 8s | Spawns 3 Spore Mites from egg sacs |
-| Ground Slam | 3 masks | 1.5s windup | 4 unit AoE, knockback |
-| Tendril Sweep | 2 masks | 0.8s | 180-degree frontal cone, 5 units |
+| Ground slam | 3 masks (AoE 4u radius) | Raises both arms, 1s wind-up | 6s |
+| Summon swarm | Spawns 4 Spore Mites | Abdomen pulses green, 2s | 12s |
+| Acid spit | 2 masks (ranged, arcing) | Head tilts back, 0.8s | 4s |
 
-**Phase 2 (60%-25%)**
-- Spawned Mites upgrade to Tendril Creepers
-- Ground Slam creates 3 spore cloud patches (2s duration, 1 Infection/s)
-- New attack: Egg Barrage (lobs 5 eggs across room, each hatches in 3s)
+**Phase 2 Changes:**
+- Summon swarm now spawns 6 Spore Mites + 1 Tendril Creeper
+- Ground slam leaves acid pool (5s duration, 1 mask/s contact damage)
+- New attack: Brood Burst (sacrifice 3 existing summons to create 3-unit AoE explosion per summon, 2 masks each)
+- Movement speed increases to 2.5 u/s
 
-**Phase 3 (25%-0%)**
-- Continuous spawning (every 4s)
-- Ground Slam radius doubled (8 units)
-- Desperation: Matriarch burrows underground, emerges at player location (3 masks + stagger)
+**Unique Mechanic:** Summoned creatures tether to Matriarch. If all summons die, Matriarch is staggered for 3s.
 
-### The Distillery
+### 2. The Distillery
 
 | Property | Value |
 |---|---|
 | HP | 35 masks |
-| Speed | 3 u/s |
-| Spawn zones | Zones 3-5 |
-| Arena | Requires acid-resistant platforms in room |
+| Speed | Walk: 2 u/s |
+| Detection range | 12 units |
+| Spawn zones | 3, 5 |
 
-**Phase 1 (100%-60%)**
+**Phase 1 Attacks:**
 
-| Attack | Damage | Speed | Description |
+| Attack | Damage | Telegraph | Cooldown |
 |---|---|---|---|
-| Acid Spray | 2 masks + 2 Infection | 1s | 60-degree cone, 6 unit range |
-| Body Check | 2 masks | 0.6s | Charge 4 units forward |
-| Regeneration | Self-heal 2 masks | Passive | Heals every 10s if not hit |
+| Acid spray (cone) | 2 masks (5u range, 60-degree arc) | Mouth opens wide, green mist, 0.6s | 5s |
+| Regeneration pulse | Heals 3 masks | Glows green, 1.5s channel (interruptible) | 10s |
+| Body slam | 2 masks + knockback 4u | Rears up, 0.8s | 7s |
 
-**Phase 2 (60%-25%)**
-- Acid Spray leaves persistent puddles (8s duration)
-- Regeneration increases to 3 masks / 8s
-- New attack: Acid Rain (room-wide, 1 mask/s for 3s, safe zones marked 1s before)
+**Phase 2 Changes:**
+- Regeneration pulse heals 5 masks and is no longer interruptible
+- Acid spray becomes 120-degree arc
+- New attack: Acid Rain (room-wide, 1 mask/s for 4s, safe zones marked by dry patches)
+- Passive: acid trail left while moving (1 mask on contact, 3s duration)
 
-**Phase 3 (25%-0%)**
-- Regeneration: 4 masks / 6s (must sustain DPS to kill)
-- Acid puddles permanent until Distillery dies
-- Desperation: splits into 2 half-HP copies (17 masks each, must kill both)
+**Unique Mechanic:** Regeneration can be countered by dealing 5+ masks during the channel window, causing a "purge" that deals 3 masks back to the Distillery.
 
-### Vein Warden
+### 3. Vein Warden
 
 | Property | Value |
 |---|---|
 | HP | 50 masks |
-| Speed | 0 (stationary Phase 1-2), 4 u/s (Phase 3) |
-| Spawn zones | Zones 4-6 |
-| Special | Blocks passage. Must be killed to proceed. |
+| Speed | 0 (stationary Phase 1) → 3 u/s (mobile Phase 2) |
+| Detection range | Entire room (omniscient within its room) |
+| Spawn zones | 6, 7 |
 
-**Phase 1 (100%-60%)**
+**Phase 1 Attacks:**
 
-| Attack | Damage | Speed | Description |
+| Attack | Damage | Telegraph | Cooldown |
 |---|---|---|---|
-| Vein Lash | 2 masks | 0.5s | 8 unit range tendril whip |
-| Wall Spikes | 2 masks | 1s telegraph | Spikes erupt from walls in player's direction |
-| Root Grab | 0 + 3s root | 1.2s | Roots emerge at player feet, 3 unit radius |
+| Vine lash | 2 masks (ranged, 10u reach) | Vine rears back, 0.5s | 3s |
+| Root grab | 0 damage, immobilizes 2s | Ground cracks beneath player, 0.8s | 8s |
+| Spore barrage | 1 mask x5 (scattered projectiles) | Pods on body swell, 1s | 6s |
 
-**Phase 2 (60%-25%)**
-- Vein Lash chains to 2 targets (2P+)
-- Wall Spikes fire from ceiling as well
-- New attack: Vein Network (floor veins glow, explode in sequence like a fuse, 2 masks each)
+**Phase 2 Changes:**
+- Uproots: now mobile at 3 u/s. Room shakes during transition.
+- Vine lash becomes sweeping (180-degree arc, 2 masks)
+- New attack: Tunnel (burrows underground for 3s, emerges beneath player for 3 masks)
+- Root grab now affects all players within 6 units simultaneously
 
-**Phase 3 (25%-0%)**
-- Warden uproots and becomes mobile (4 u/s)
-- All attacks available while moving
-- Desperation: room slowly constricts (walls close in over 60s, reducing arena by 50%)
+**Unique Mechanic:** While rooted, destroying 3 exposed root nodes (each has 5 masks HP, positioned around the room) deals 10 masks to the Warden and forces Phase 2 early.
 
-### Canker Bloom
+### 4. Shriek Hollow
 
 | Property | Value |
 |---|---|
 | HP | 30 masks |
-| Speed | 5 u/s (fast) |
-| Spawn zones | Zones 5-7 |
-| Special | Infection aura: +1 Infection/3s to all players within 10 units |
+| Speed | Walk: 3 u/s, Dash: 8 u/s |
+| Detection range | Sound-based only (no visual detection). Detects noise > 10. |
+| Spawn zones | 2, 7 |
 
-**Phase 1 (100%-60%)**
+**Phase 1 Attacks:**
 
-| Attack | Damage | Speed | Description |
+| Attack | Damage | Telegraph | Cooldown |
 |---|---|---|---|
-| Petal Barrage | 1 mask x5 | 0.3s per petal | Scatter projectiles, wide spread |
-| Pollen Cloud | 0 + blind (3s) | 1s | 5 unit radius, obscures vision |
-| Bloom Dash | 2 masks | 0.4s | Dashes through player, leaves pollen trail |
+| Sonic scream | 2 masks (cone 8u, 90-degree) | Inhales deeply, 1s | 5s |
+| Lunging bite | 3 masks (melee dash) | Crouches, 0.5s | 4s |
+| Echo pulse | 0 damage, reveals all players for 10s | Body vibrates, 0.3s | 15s |
 
-**Phase 2 (60%-25%)**
-- Infection aura range increases to 15 units
-- Petal Barrage tracks player (homing, 0.5 turn rate)
-- New attack: Symbiosis (attaches to a Tier 2 enemy if present, heals it 2 masks/s, must kill carrier first)
+**Phase 2 Changes:**
+- Sonic scream becomes 180-degree arc
+- Echo pulse now also slows players by 30% for 5s
+- New attack: Silence (disables all player abilities for 3s, room-wide, 20s cooldown)
+- Passive: constant low noise emission attracts other enemies to the room
 
-**Phase 3 (25%-0%)**
-- Infection aura: +2 Infection/2s
-- All attacks inflict +3 Infection on hit
-- Desperation: Full Bloom (room fills with pollen over 30s, constant 1 mask/s damage to all players unless they find the 1 safe pocket that shifts every 5s)
+**Unique Mechanic:** Completely blind. If all players remain perfectly still (no input) for 3s, Shriek Hollow returns to IDLE and can be bypassed without combat.
 
-## Ecosystem Interaction
+## Spawn Rules
 
-| Behavior | Detail |
+| Rule | Value |
 |---|---|
-| Hunts Tier 2 | Apex actively kills Predators in their room |
-| Territorial | Only 1 Apex per room. If simulation would spawn 2, lower-HP one relocates. |
-| Clears rooms | A room with an Apex has 0-2 Tier 2 enemies (hunted) but normal Tier 1 (Apex ignores fodder) |
-| Player priority | Always targets players over Tier 2 if players are in the room |
+| Spawn chance | 5% per hour of room being unvisited |
+| Max per zone | 2 active Apex at any time |
+| Spawn announcement | Distant roar/rumble audible 3 rooms away |
+| Room marking | Apex rooms have unique ambient particles (visible before entry) |
+| Despawn | Never despawns once spawned (persists until killed or session ends) |
+| Ecosystem effect | Apex presence clears all Tier 2 from room (killed or fled) |
 
-## Loot Table
+## Multiplayer Scaling
 
-| Drop | Chance | Quantity |
+| Players | HP Multiplier | Damage Multiplier |
 |---|---|---|
-| Silk | 100% | 15-25 |
-| Infection | 100% | +3 base |
-| Rare material | 60% | 1-2 |
-| Ability shard | 100% | 1 |
-| Apex trophy (cosmetic) | 20% | 1 |
+| 1 | 1.0x | 1.0x |
+| 2 | 1.6x | 1.0x |
+| 3 | 2.2x | 1.1x |
+| 4 | 2.8x | 1.2x |
 
 ## Implementation Notes
 
-- Phase transitions managed by `ApexPhaseController` component (listens to HP change events)
-- Invulnerability during transition uses `DamageImmunity` flag on `HealthComponent`
-- Shockwave on phase change uses `OverlapSphere` + `AddForce` on all entities in range
-- Arena effects (constricting walls, acid puddles) are server-authoritative `HazardZone` entities
-- Apex spawn check runs as a background job every 60s per room via `EcosystemTickSystem`
+- Phase transitions use `ApexPhaseController` component with HP threshold callbacks
+- Transition invulnerability implemented via `DamageImmunityBuffer` (120 ticks / 2s)
+- Vein Warden root nodes are separate `NetworkObject`s with their own HP pool
+- Shriek Hollow audio detection uses the shared Noise System (see NOISE_SYSTEM.md)
+- Apex enemies have NavMesh priority 80 (highest among non-boss enemies)
+- Loot drops are server-authoritative; Apex loot uses a dedicated loot table with pity timer
