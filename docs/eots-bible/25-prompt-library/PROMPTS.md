@@ -1,38 +1,54 @@
-# 25 — GENERATIVE ART PROMPT LIBRARY
+# Echoes of the Spore -- Prompt Library
 
-## Usage: Stable Diffusion XL with custom LoRA fine-tuned on project art style.
-## All outputs require human curation before entering production pipeline.
+> Production-grade XML agent prompts for Claude Opus 4.6.
+> Each prompt is a self-contained template: fill in the `{{PLACEHOLDER}}` parameters, paste the XML block into Claude, and receive compilable, test-covered output.
 
-### Environment Prompts
+---
 
-**Sporehaven:**
-```
-Bioluminescent underground marsh, massive fungal stalactites dripping with glowing cyan liquid, ancient stone bridges covered in moss and mycelium, warm green fog, scattered remnants of a stone civilization partially consumed by fungal growth, hand-painted 2D game background, parallax depth layers, brutalist architecture fragments overgrown with coral-like bioluminescent fungi, dark ambient lighting with pools of cyan and teal light, no characters, wide composition, 4K resolution, concept art quality
-```
+## How to Use
 
-**The Cortex:**
-```
-Neural fungal network interior, walls made of pulsing organic synapses rendered in gold and deep purple, floating spore particles that look like neurons firing, Art Nouveau-inspired organic architecture mixed with brutalist concrete pillars, bioluminescent veins running through dark surfaces, cyberpunk-organic hybrid aesthetic, hand-painted 2D game background, parallax layers, deep atmospheric perspective fading to black, concept art quality, 4K
-```
+1. Open the prompt file you need.
+2. Copy the entire `<agent-prompt>` XML block.
+3. Replace every `{{PLACEHOLDER}}` with your concrete values.
+4. Paste into Claude (Opus 4.6 recommended).
+5. Review generated code against the Quality Gates listed in the prompt.
 
-**Necrospore Core:**
-```
-The heart of a sentient fungal labyrinth, massive central chamber with an enormous pulsing spore organism suspended in void, concentric rings of fossilized civilization remains embedded in fungal walls, extreme bioluminescence in gold and infection cyan, atmosphere of cosmic dread mixed with alien beauty, the floor is transparent revealing infinite depth below, brutalist geometric framework barely visible beneath organic overgrowth, hand-painted 2D game background, boss arena composition, 4K, concept art
-```
+---
 
-### Character Prompts
+## Prompt Index
 
-**Sporeling (Clean):**
-```
-2D side-view game character sprite, small agile humanoid figure wrapped in lightweight fungal membrane armor, sleek silhouette optimized for readability at small scale, bioluminescent cyan veins visible on limbs, carrying a curved blade made of crystallized spore, neutral standing pose, hand-drawn line art with flat color fills, dark body with cyan accents, transparent background, sprite sheet reference, concept art quality
-```
+| # | File | Purpose |
+|---|------|---------|
+| 1 | [prompt-ecs-component.md](prompt-ecs-component.md) | Create a new ECS component (C# struct, FixedPoint64, zero Unity API) |
+| 2 | [prompt-ecs-system.md](prompt-ecs-system.md) | Create a new ECS system with deterministic update loop |
+| 3 | [prompt-enemy-type.md](prompt-enemy-type.md) | Design a new enemy type with behavior tree and stat block |
+| 4 | [prompt-boss-fight.md](prompt-boss-fight.md) | Design a 3-phase boss encounter with mechanics and loot table |
+| 5 | [prompt-echo-boon.md](prompt-echo-boon.md) | Create an Echo Boon (civilization-themed ability with upgrade tiers) |
+| 6 | [prompt-zone-design.md](prompt-zone-design.md) | Design a complete zone: biome, hazards, enemy roster, boss |
+| 7 | [prompt-fused-class.md](prompt-fused-class.md) | Create a Fused Class combination with unique kit |
+| 8 | [prompt-networking-system.md](prompt-networking-system.md) | Build a networking feature with rollback compatibility |
+| 9 | [prompt-procgen-module.md](prompt-procgen-module.md) | Build a Rust proc-gen module with C FFI for Unity interop |
 
-**Sporeling (Infection Tier 5):**
-```
-2D side-view game character sprite, agile humanoid almost completely consumed by fungal growth, original body barely visible beneath layers of bioluminescent fungal tissue, extra limbs emerging from back made of mycelial threads, halo of floating golden spores orbiting head, eyes replaced with twin pools of infection cyan light, blade fused with arm becoming organic weapon, hand-drawn line art, overwhelming cyan and gold bioluminescence, transparent background, horror-beautiful aesthetic, concept art quality
-```
+---
 
-**Myco-Juggernaut (Fused Entity):**
-```
-2D game character sprite, massive fused organism combining agility with heavy armor, asymmetric design left side sleek right side armored with root growths, four arms two human-scale two massive root limbs, glowing cyan seams where bodies merged, ground cracking with mycelial roots beneath, intimidating silhouette, hand-drawn line art flat color, transparent background, concept art quality
-```
+## Conventions
+
+- **FixedPoint64 everywhere.** No `float` or `double` in simulation code.
+- **Zero Unity API in ECS components/systems.** Pure C# structs and logic.
+- **Deterministic.** Every system must produce identical output given identical input across all platforms.
+- **Test-covered.** Every prompt requires unit tests alongside production code.
+- **Bible-anchored.** Each prompt references the relevant section of the EotS Bible for design context.
+
+---
+
+## Bible Cross-References
+
+| Bible Section | Relevant Prompts |
+|---------------|-----------------|
+| `13-tech-architecture/TECH_ARCH.md` | ECS Component, ECS System, Networking, ProcGen |
+| `05-enemies-bosses/ENEMIES.md` | Enemy Type, Boss Fight |
+| `06-echo-boons/ECHO_BOONS.md` | Echo Boon |
+| `07-zones/ZONES.md` | Zone Design |
+| `04-classes/CLASSES.md` | Fused Class |
+| `14-networking/NETWORKING.md` | Networking System |
+| `15-procgen/PROCGEN.md` | ProcGen Module |
